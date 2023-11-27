@@ -27,9 +27,8 @@ export default function HomePage() {
   const getMovies = async () => {
     try {
       const { data } = await axios.get<Movie[]>(
-        'https://movies-app.prakashsakari.repl.co/api/movies',
+        'http://localhost:3001/api/filmes',
       );
-      console.log(process.env.NEXT_PUBLIC_API_KEY);
       setMovies(data);
       setLoading(false);
     } catch (err) {
