@@ -20,14 +20,11 @@ export default function HomePage() {
   const [error, setError] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
 
-  useEffect(() => {
-    getMovies();
-  }, []);
-
-  const getMovies = async () => {
+  const getMovies = async (searchTerm: string) => {
     try {
+      setLoading(true);
       const { data } = await axios.get<Movie[]>(
-        'http://localhost:3001/api/filmes',
+        'http://localhost:3000/api/filmes?searchTerm=' + searchTerm,
       );
       setMovies(data);
       setLoading(false);
@@ -38,13 +35,17 @@ export default function HomePage() {
     }
   };
 
+  useEffect(() => {
+    getMovies('');
+  }, []);
+
   return (
     <div className={styles.container}>
       <header className={styles.header}>
         <h1 className={styles.heading_1}>Movies</h1>
       </header>
       <h1 id={styles.h1}>Search Bar</h1>
-      <SearchBar searchTerm={searchTerm} onSearchChange={setSearchTerm} />
+      <SearchBar searchTerm={searchTerm} onSearchChange={getMovies} />
       <main className={styles.main}>
         {loading ? (
           <p>Carregando...</p>

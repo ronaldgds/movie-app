@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
 interface Movie {
   id: number;
@@ -17,19 +17,44 @@ interface Data {
 }
 
 export default function List(props: ListProps) {
-  const data: Data = require('https://movies-app.prakashsakari.repl.co/api/movies');
+  // const data: Data = require('http://localhost:3001/api/filmes');
 
-  const filteredData = data.filmes.filter((el) => {
+  const [data, setData] = useState<
+    {
+      id: string;
+      name: string;
+      genre: string;
+      duration: number;
+    }[]
+  >([]);
+  const filteredData = data.filter((el) => {
     if (props.input === '') {
       return el;
     } else {
       return (
         el.name.toLowerCase().includes(props.input.toLowerCase()) ||
         el.genre.toLowerCase().includes(props.input.toLowerCase()) ||
-        el.duration.toLowerCase().includes(props.input.toLowerCase())
+        el.duration.toString().includes(props.input.toLowerCase())
       );
     }
   });
+  useEffect(() => {
+    fetch('http://localhost:3001/api/filmes')
+      .then(
+        (res) =>
+          res.json() as Promise<
+            {
+              id: string;
+              name: string;
+              genre: string;
+              duration: number;
+            }[]
+          >,
+      )
+      .then((res) => {
+        setData(res);
+      });
+  }, []);
   return (
     <ul>
       {filteredData.map((item) => (
